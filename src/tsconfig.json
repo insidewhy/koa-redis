@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "strict": true,
+    "lib": ["es7"],
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "outDir": "../lib",
+    "sourceMap": true,
+    "target": "es6"
+  },
+  "include": ["."]
+}

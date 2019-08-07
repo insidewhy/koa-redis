@@ -1,10 +1,10 @@
 {
-  "name": "koa-redis",
+  "name": "koa-redis-snowman",
   "description": "Redis storage for Koa session middleware/cache with Sentinel and Cluster support",
-  "version": "4.0.0",
+  "version": "1.0.0",
   "author": "dead_horse <dead_horse@qq.com>",
   "bugs": {
-    "url": "https://github.com/koajs/koa-redis/issues"
+    "url": "https://github.com/ohjames/koa-session-redis/issues"
   },
   "commitlint": {
     "extends": [
@@ -13,23 +13,22 @@
   },
   "contributors": [
     "dead_horse <dead_horse@qq.com>",
-    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
+    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
+    "ohjames <github@chilon.net>"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.4.3",
-    "co-wrap-all": "^1.0.0",
+    "@types/ioredis": "^4.0.13",
+    "@types/koa-session": "^5.10.1",
     "debug": "^4.1.1",
     "ioredis": "^4.9.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-transform-runtime": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
+    "@types/debug": "^4.1.4",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "autod": "^3.1.0",
-    "co-mocha": "^1.2.2",
     "connect": "^3.6.6",
     "connect-redis": "^3.4.1",
     "eslint": "^5.16.0",
@@ -46,6 +45,7 @@
     "remark-preset-github": "^0.0.13",
     "rimraf": "^2.6.3",
     "should": "^13.2.3",
+    "typescript": "^3.5.3",
     "xo": "^0.24.0"
   },
   "engines": {
@@ -89,7 +89,7 @@
   "license": "MIT",
   "lint-staged": {
     "linters": {
-      "*.js": [
+      "*.ts": [
         "xo --fix",
         "git add"
       ],
@@ -104,6 +104,7 @@
     }
   },
   "main": "lib/index.js",
+  "typings": "lib/index",
   "prettier": {
     "singleQuote": true,
     "bracketSpacing": true,
@@ -114,15 +115,17 @@
       "preset-github"
     ]
   },
-  "repository": "koajs/koa-redis",
+  "repository": "ohjames/koa-session-redis",
   "scripts": {
-    "autod": "autod -w --prefix=^ --keep=koa -D co-mocha,mocha,istanbul,autod",
+    "autod": "autod -w --prefix=^ --keep=koa -D mocha,istanbul,autod",
     "build": "npm run build:clean && npm run build:lib",
+    "watch": "npm run build:clean && npm run build:lib -- --watch",
     "build:clean": "rimraf lib",
-    "build:lib": "babel src --out-dir lib",
-    "lint": "xo && remark . -qfo && eslint lib",
-    "test": "npm run build && npm run lint && istanbul cover node_modules/mocha/bin/_mocha -- --require co-mocha \"test/**/*.test.js\"",
-    "test-only": "mocha --require co-mocha \"test/**/*.test.js\""
+    "build:lib": "tsc -p src/tsconfig.json",
+    "lint": "xo && remark . -qfo && eslint \"src/*.ts\"",
+    "test": "npm run build && npm run lint && istanbul cover node_modules/mocha/bin/_mocha -- \"test/**/*.test.js\"",
+    "test-only": "mocha \"test/**/*.test.js\"",
+    "prepublish": "npm run build"
   },
   "xo": {
     "prettier": true,

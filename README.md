@@ -13,7 +13,7 @@
 
 [![NPM](https://nodei.co/npm/koa-redis.svg?downloads=true)](https://nodei.co/npm/koa-redis/)
 
-**v4.0.0+ now uses `ioredis` and has support for Sentinel and Cluster!**
+**A fork of koa-redis, rewritten in typescript and with better support for koa-session**
 
 
 ## Table of Contents
@@ -31,10 +31,6 @@
   * [session.set(sid, sess, ttl)](#sessionsetsid-sess-ttl)
   * [session.destroy(sid)](#sessiondestroysid)
   * [session.quit()](#sessionquit)
-  * [session.end()](#sessionend)
-  * [session.status](#sessionstatus)
-  * [session.connected](#sessionconnected)
-  * [session.client](#sessionclient)
 * [Benchmark](#benchmark)
 * [Testing](#testing)
 * [License](#license)
@@ -58,21 +54,19 @@ yarn add koa-redis
 
 ## Usage
 
-`koa-redis` works with [koa-session](https://github.com/koajs/session) (a basic session middleware for koa).
-
-For more examples, please see the [examples folder of `koa-session`](https://github.com/koajs/session/tree/master/example).
+`koa-redis-snowman` works with [koa-session](https://github.com/koajs/session) (a basic session middleware for koa).
 
 ### Basic
 
 ```js
-const session = require('koa-session');
-const redisStore = require('koa-redis');
+const Session = require('koa-session-snowman');
+const RedisStore = require('koa-redis');
 const koa = require('koa');
 
 const app = koa();
 app.keys = ['keys', 'keykeys'];
-app.use(session({
-  store: redisStore({
+app.use(new Session({
+  store: new RedisStore({
     // Options specified here
   })
 }, app));
@@ -115,14 +109,14 @@ app.listen(8080);
 ### Sentinel
 
 ```js
-const session = require('koa-session');
-const redisStore = require('koa-redis');
+const Session = require('koa-session');
+const RedisStore = require('koa-redis');
 const koa = require('koa');
 
 const app = koa();
 app.keys = ['keys', 'keykeys'];
-app.use(session({
-  store: redisStore({
+app.use(new Session({
+  store: new RedisStore({
     // Options specified here
     // <https://github.com/luin/ioredis#sentinel>
     sentinels: [
@@ -140,14 +134,14 @@ app.use(session({
 ### Cluster
 
 ```js
-const session = require('koa-session');
-const redisStore = require('koa-redis');
+const Session = require('koa-session');
+const RedisStore = require('koa-redis');
 const koa = require('koa');
 
 const app = koa();
 app.keys = ['keys', 'keykeys'];
-app.use(session({
-  store: redisStore({
+app.use(new Session({
+  store: new RedisStore({
     // Options specified here
     // <https://github.com/luin/ioredis#cluster>
     isRedisCluster: true,
@@ -202,15 +196,15 @@ See the [`ioredis` docs](https://github.com/luin/ioredis#connection-events) for 
 These are some the functions that `koa-session` uses that you can use manually. You will need to initialize differently than the example above:
 
 ```js
-const session = require('koa-session');
-const redisStore = require('koa-redis')({
+const Session = require('koa-session');
+const RedisStore = require('koa-redis')({
   // Options specified here
 });
 const app = require('koa')();
 
 app.keys = ['keys', 'keykeys'];
-app.use(session({
-  store: redisStore
+app.use(new Session({
+  store: new RedisStore
 }, app));
 ```
 
@@ -234,24 +228,10 @@ Generator that destroys a session (removes it from Redis) by ID. Tields `ioredis
 
 Generator that stops a Redis session after everything in the queue has completed. Yields `ioredis`'s `client.quit()`.
 
-### session.end()
-
-Alias to `session.quit()`. It is not safe to use the real end function, as it cuts off the queue.
-
-### session.status
-
-String giving the connection status updated using `client.status`.
-
-### session.connected
-
-Boolean giving the connection status updated using `client.status` after any of the events above is fired.
-
-### session.client
-
-Direct access to the `ioredis` client object.
-
 
 ## Benchmark
+
+Note: these are from the generator based version, should retry with new async version.
 
 | Server                  | Transaction rate      | Response time |
 | ----------------------- | --------------------- | ------------- |
@@ -260,7 +240,7 @@ Direct access to the `ioredis` client object.
 | connect with session    | **2759.70 trans/sec** | **0.02 secs** |
 | koa with session        | **2355.38 trans/sec** | **0.02 secs** |
 
-Detailed benchmark report [here](https://github.com/koajs/koa-redis/tree/master/benchmark)
+Detailed benchmark report [here](https://github.com/ohjames/koa-redis-snowman/tree/master/benchmark)
 
 
 ## Testing
@@ -282,29 +262,30 @@ Detailed benchmark report [here](https://github.com/koajs/koa-redis/tree/master/
 | -------------- | -------------------------- |
 | **dead_horse** |                            |
 | **Nick Baugh** | <http://niftylettuce.com/> |
+| **ohjames**    |                            |
 
 
 ## 
 
-[travis-image]: https://img.shields.io/travis/koajs/koa-redis.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/ohjames/koa-redis-snowman.svg?style=flat-square
 
-[travis-url]: https://travis-ci.org/koajs/koa-redis
+[travis-url]: https://travis-ci.org/ohjames/koa-redis-snowman
 
-[coveralls-image]: https://img.shields.io/coveralls/koajs/koa-redis.svg?style=flat-square
+[coveralls-image]: https://img.shields.io/coveralls/ohjames/koa-redis-snowman.svg?style=flat-square
 
-[coveralls-url]: https://coveralls.io/r/koajs/koa-redis?branch=master
+[coveralls-url]: https://coveralls.io/r/ohjames/koa-redis-snowman?branch=master
 
-[david-image]: https://img.shields.io/david/koajs/koa-redis.svg?style=flat-square&label=deps
+[david-image]: https://img.shields.io/david/ohjames/koa-redis-snowman.svg?style=flat-square&label=deps
 
-[david-url]: https://david-dm.org/koajs/koa-redis
+[david-url]: https://david-dm.org/ohjames/koa-redis-snowman
 
-[david-dev-image]: https://img.shields.io/david/dev/koajs/koa-redis.svg?style=flat-square&label=devDeps
+[david-dev-image]: https://img.shields.io/david/dev/ohjames/koa-redis-snowman.svg?style=flat-square&label=devDeps
 
-[david-dev-url]: https://david-dm.org/koajs/koa-redis#info=devDependencies
+[david-dev-url]: https://david-dm.org/ohjames/koa-redis-snowman#info=devDependencies
 
 [license-image]: https://img.shields.io/npm/l/koa-redis.svg?style=flat-square
 
-[license-url]: https://github.com/koajs/koa-redis/blob/master/LICENSE
+[license-url]: https://github.com/ohjames/koa-redis-snowman/blob/master/LICENSE
 
 [cluster]: https://github.com/luin/ioredis/blob/master/API.md#new-clusterstartupnodes-options
 
