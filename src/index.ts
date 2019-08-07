@@ -1,6 +1,6 @@
 /** !
- * koa-redis - index.js
- * Copyright(c) 2015
+ * koa-redis-snowman - index.js
+ * Copyright(c) 2015-2019
  * MIT Licensed
  *
  * Authors:
@@ -16,7 +16,7 @@ import * as debugMod from 'debug';
 import * as ioredis from 'ioredis';
 import { Session } from 'koa-session';
 
-const debug = debugMod('koa-redis');
+const debug = debugMod('koa-redis-snowman');
 
 interface RedisStoreOptions {
   isRedisCluster: boolean;
@@ -80,7 +80,8 @@ class RedisStore {
       const dupClient = options.client;
       delete options.client;
       delete options.duplicate;
-      this.client = dupClient.duplicate(options); // Useful if you want to use the DB option without adjusting the client DB outside koa-redis
+      // Useful if you want to use the DB option without adjusting the client DB outside koa-redis-snowman
+      this.client = dupClient.duplicate(options);
     } else {
       debug('Using provided client');
       this.client = options.client;
