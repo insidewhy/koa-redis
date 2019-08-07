@@ -1,7 +1,7 @@
 {
   "name": "koa-redis-snowman",
   "description": "Redis storage for Koa session middleware/cache with Sentinel and Cluster support",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "dead_horse <dead_horse@qq.com>",
   "bugs": {
     "url": "https://github.com/ohjames/koa-session-redis/issues"
