@@ -26,9 +26,8 @@ interface RedisStoreOptions {
 declare module 'ioredis' {
   interface Cluster {
     setex: (sid: string, ttl: number, data: string) => Promise<void>;
-    expire: (sid: string, ttl: number) => Promise<void>;
-    del: (sid: string) => Promise<void>;
-    select: (dbName: string) => Promise<void>;
+    select(index: number, callback: (err: Error, res: string) => void): void;
+    select(index: number): Promise<string>;
   }
 }
 
